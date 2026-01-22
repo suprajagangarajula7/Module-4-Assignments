@@ -1,0 +1,75 @@
+STEP 1: CREATE TABLE
+create table students (
+  id serial primary key,
+  name text not null,
+  email text unique not null,
+  age integer,
+  course text,
+  created_at timestamp default current_timestamp
+);
+
+output is CREATE TABLE
+
+
+STEP 2: INSERT DATA
+insert into students (name, email, age, course)
+values
+  ('Aarav Sharma', 'aarav@gmail.com', 21, 'Full Stack Development'),
+  ('Diya Patel', 'diya@gmail.com', 19, 'Data Science'),
+  ('Rohan Mehta', 'rohan@gmail.com', 23, 'Full Stack Development'),
+  ('Sneha Iyer', 'sneha@gmail.com', 22, 'Cyber Security'),
+  ('Kunal Verma', 'kunal@gmail.com', 18, 'Data Science'),
+  ('Ananya Singh', 'ananya@gmail.com', 24, 'Full Stack Development');
+
+output is INSERT 0 6
+
+
+STEP 3: READ DATA
+
+Fetch all students
+select * from students;
+
+Fetch students older than 20
+select * from students
+where age > 20;
+
+Fetch only name and email
+select name, email from students;
+
+Fetch students enrolled in a specific course
+select * from students
+where course = 'Full Stack Development';
+
+
+STEP 4: UPDATE DATA
+
+Update age of one student
+update students
+set age = 22
+where id = 1;
+
+output is UPDATE 1
+
+
+Update course for all students in one course
+update students
+set course = 'AI & Machine Learning'
+where course = 'Data Science';
+
+output is UPDATE 2
+
+
+STEP 5: DELETE DATA
+
+Delete one student using id
+delete from students
+where id = 5;
+
+output is DELETE 1
+
+
+Delete all students below a certain age
+delete from students
+where age < 20;
+
+output is DELETE 1
