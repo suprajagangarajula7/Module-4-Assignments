@@ -1,0 +1,112 @@
+CREATE TABLE studentsdata (
+  id SERIAL PRIMARY KEY,
+  name TEXT NOT NULL,
+  email TEXT UNIQUE NOT NULL,
+  age INTEGER,
+  course TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+INSERT INTO studentsdata (name, email, age, course)
+VALUES
+  ('Aarav Sharma', 'aarav@gmail.com', 21, 'Full Stack Development'),
+  ('Diya Patel', 'diya@gmail.com', 19, 'Data Science'),
+  ('Rohan Mehta', 'rohan@gmail.com', 23, 'Full Stack Development'),
+  ('Sneha Iyer', 'sneha@gmail.com', 22, 'Cyber Security'),
+  ('Kunal Verma', 'kunal@gmail.com', 18, 'Data Science'),
+  ('Ananya Singh', 'ananya@gmail.com', 24, 'Full Stack Development');
+
+
+  SELECT * FROM studentsdata;
+
+1. Count of total number of students: 
+Command: select count(*) from studentsdata;
+Output: 6
+
+2: average age of students
+Command: SELECT AVG(age) FROM studentsdata;
+Output:21.3333333333333333
+
+3.  minimum and maximum age
+Command of max:select max(age) from studentsdata;
+Output for max: 24
+
+Command for min: select min(age) from studentsdata;
+Output for min: 18
+
+4.Count how many students are enrolled in each course
+Command: select course, count(*) from studentsdata
+group by course;
+Output:| course                 | count |
+| ---------------------- | ----- |
+| Cyber Security         | 1     |
+| Data Science           | 2     |
+| Full Stack Development | 3     |
+
+
+5. Count students whose age is greater than 20
+Command: select count(*) from studentsdata where age > 20;
+Output: 4
+
+
+STEP:3
+1. Display course-wise student count
+Command:select course, count(*) from studentsdata group by course;
+Output:
+| course                 | count |
+| ---------------------- | ----- |
+| Cyber Security         | 1     |
+| Data Science           | 2     |
+| Full Stack Development | 3     |
+
+2.Display only courses where student count is greater than 1
+Command:select course, count(*) from studentsdata group by course having count(*) > 1;
+Output:
+| course                 | count |
+| ---------------------- | ----- |
+| Data Science           | 2     |
+| Full Stack Development | 3     |
+
+3.Display courses sorted by highest student count first
+Command:select course, count(*) from studentsdata group by course order by count(*) desc;
+Output:
+| course                 | count |
+| ---------------------- | ----- |
+| Full Stack Development | 3     |
+| Data Science           | 2     |
+| Cyber Security         | 1     |
+
+
+STEP:4
+1.Fetch the latest 3 students based on created_at
+Command: select * from studentsdata order by created_at desc limit 3;
+Output:
+id | name           | email              | age | course                  | created_at
+---  ---------------  ------------------- ----- -------------------------+---------------------
+6  | Ananya Singh   | ananya@gmail.com   | 24  | Full Stack Development   | 2026-01-24 19:40:10
+5  | Kunal Verma    | kunal@gmail.com    | 18  | Data Science             | 2026-01-24 19:38:55
+4  | Sneha Iyer     | sneha@gmail.com    | 22  | Cyber Security           | 2026-01-24 19:37:20
+
+
+2.Fetch the top 5 oldest students
+Command:select * from studentsdata order by age desc limit 5;
+Output:
+id | name           | email              | age | course                  | created_at
+--- ---------------- -------------------- ----- -------------------------- ---------------------
+6  | Ananya Singh   | ananya@gmail.com   | 24  | Full Stack Development   | 2026-01-24 19:40:10
+3  | Rohan Mehta    | rohan@gmail.com    | 23  | Full Stack Development   | 2026-01-24 19:35:42
+4  | Sneha Iyer     | sneha@gmail.com    | 22  | Cyber Security           | 2026-01-24 19:37:20
+1  | Aarav Sharma   | aarav@gmail.com    | 22  | AI & Machine Learning    | 2026-01-24 19:30:12
+2  | Diya Patel    | diya@gmail.com     | 19  | AI & Machine Learning    | 2026-01-24 19:32:01
+
+
+3.Fetch students enrolled in a specific course, sorted by age (descending)
+Command:select * from studentsdata where course = 'Full Stack Development' order by age desc;
+Output: 
+id | name         | email            | age | course                  | created_at
+--- -------------- ------------------ ----- -------------------------- ---------------------
+6  | Ananya Singh | ananya@gmail.com | 24  | Full Stack Development   | 2026-01-24 19:40:10
+3  | Rohan Mehta  | rohan@gmail.com  | 23  | Full Stack Development   | 2026-01-24 19:35:42
+1  | Aarav Sharma | aarav@gmail.com  | 22  | Full Stack Development   | 2026-01-24 19:30:12
+
