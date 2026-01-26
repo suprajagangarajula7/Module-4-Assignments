@@ -1,0 +1,201 @@
+Step-1
+DROP TABLE IF EXISTS orders;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    amount INTEGER NOT NULL,
+    status TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id)
+        REFERENCES users(id)
+        ON DELETE RESTRICT
+);
+
+Step-2
+commands: 
+INSERT INTO users (name, email) VALUES
+('Aarav', 'aarav@gmail.com'),
+('Diya', 'diya@gmail.com'),
+('Rohan', 'rohan@gmail.com'),
+('Sneha', 'sneha@gmail.com'),
+('Kabir', 'kabir@gmail.com');
+
+INSERT INTO orders (user_id, amount, status) VALUES
+(1, 1200, 'PLACED'),
+(1, 2500, 'DELIVERED'),
+(1, 1800, 'PLACED'),
+(2, 3000, 'CANCELLED'),
+(2, 1500, 'DELIVERED'),
+(3, 2200, 'PLACED'),
+(4, 4000, 'DELIVERED'),
+(4, 1700, 'PLACED'),
+(5, 2600, 'PLACED');
+SELECT * FROM users;
+
+SELECT * FROM orders;
+
+Output:
+ | id | name  | email           | created_at                 |
+| -- | ----- | --------------- | -------------------------- |
+| 1  | Aarav | aarav@gmail.com | 2026-01-26 14:25:47.482247 |
+| 2  | Diya  | diya@gmail.com  | 2026-01-26 14:25:47.482247 |
+| 3  | Rohan | rohan@gmail.com | 2026-01-26 14:25:47.482247 |
+| 4  | Sneha | sneha@gmail.com | 2026-01-26 14:25:47.482247 |
+| 5  | Kabir | kabir@gmail.com | 2026-01-26 14:25:47.482247 |
+
+Output:
+| id | user_id | amount | status    | created_at                 |
+| -- | ------- | ------ | --------- | -------------------------- |
+| 1  | 1       | 1200   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 2  | 1       | 2500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 3  | 1       | 1800   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 4  | 2       | 3000   | CANCELLED | 2026-01-26 14:26:15.015981 |
+| 5  | 2       | 1500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 6  | 3       | 2200   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 7  | 4       | 4000   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 8  | 4       | 1700   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 9  | 5       | 2600   | PLACED    | 2026-01-26 14:26:15.015981 |
+
+
+Step-4 Fetch users who have more than one order
+commands: SELECT u.id, u.name, COUNT(o.id) AS total_orders
+FROM users u
+JOIN orders o ON u.id = o.user_id
+GROUP BY u.id, u.name
+HAVING COUNT(o.id) > 1;
+Output:
+| id | name  | total_orders |
+| -- | ----- | ------------ |
+| 4  | Sneha | 2            |
+| 2  | Diya  | 2            |
+| 1  | Aarav | 3            |
+
+
+Step-5 Fetch total order amount per user
+
+commands:SELECT u.id, u.name, SUM(o.amount) AS total_amount
+FROM users u
+JOIN orders o ON u.id = o.user_id
+GROUP BY u.id, u.name;
+
+Output: 
+| id | name  | total_amount |
+| -- | ----- | ------------ |
+| 4  | Sneha | 5700         |
+| 2  | Diya  | 4500         |
+| 3  | Rohan | 2200         |
+| 5  | Kabir | 2600         |
+| 1  | Aarav | 5500         |
+
+                          
+
+
+
+                          Update Data
+
+Step-1 Update the email of one user (example: user_id = 3)   
+
+UPDATE users
+SET email = 'rohan_new@gmail.com'
+WHERE id = 3;
+Output
+| id | name  | email               | created_at                 |
+| -- | ----- | ------------------- | -------------------------- |
+| 1  | Aarav | aarav@gmail.com     | 2026-01-26 14:25:47.482247 |
+| 2  | Diya  | diya@gmail.com      | 2026-01-26 14:25:47.482247 |
+| 4  | Sneha | sneha@gmail.com     | 2026-01-26 14:25:47.482247 |
+| 5  | Kabir | kabir@gmail.com     | 2026-01-26 14:25:47.482247 |
+| 3  | Rohan | rohan_new@gmail.com | 2026-01-26 14:25:47.482247 |
+
+Step-2 Update status of all orders for a specific user (user_id = 1)
+UPDATE orders
+SET status = 'DELIVERED'
+WHERE user_id = 1;
+
+| id | user_id | amount | status    | created_at                 |
+| -- | ------- | ------ | --------- | -------------------------- |
+| 4  | 2       | 3000   | CANCELLED | 2026-01-26 14:26:15.015981 |
+| 5  | 2       | 1500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 6  | 3       | 2200   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 7  | 4       | 4000   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 8  | 4       | 1700   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 9  | 5       | 2600   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 1  | 1       | 1200   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 2  | 1       | 2500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 3  | 1       | 1800   | DELIVERED | 2026-01-26 14:26:15.015981 |
+
+Step--3 Update order amount for a single order (order_id = 6)
+commands: UPDATE orders
+SET amount = 2400
+WHERE id = 6;
+
+Output: 
+| id | user_id | amount | status    | created_at                 |
+| -- | ------- | ------ | --------- | -------------------------- |
+| 4  | 2       | 3000   | CANCELLED | 2026-01-26 14:26:15.015981 |
+| 5  | 2       | 1500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 7  | 4       | 4000   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 8  | 4       | 1700   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 9  | 5       | 2600   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 1  | 1       | 1200   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 2  | 1       | 2500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 3  | 1       | 1800   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 6  | 3       | 2400   | PLACED    | 2026-01-26 14:26:15.015981 |
+
+
+                             
+
+                                                    Delete Data
+
+Step-1  
+DELETE FROM orders
+WHERE id = 4;
+Output 
+| id | user_id | amount | status    | created_at                 |
+| -- | ------- | ------ | --------- | -------------------------- |
+| 4  | 2       | 3000   | CANCELLED | 2026-01-26 14:26:15.015981 |
+| 5  | 2       | 1500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 7  | 4       | 4000   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 8  | 4       | 1700   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 9  | 5       | 2600   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 1  | 1       | 1200   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 2  | 1       | 2500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 3  | 1       | 1800   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 6  | 3       | 2400   | PLACED    | 2026-01-26 14:26:15.015981 |
+
+Step-2 Delete all orders of a specific user (user_id = 2)
+
+commands: DELETE FROM orders
+WHERE user_id = 2;
+
+Output: 
+| id | user_id | amount | status    | created_at                 |
+| -- | ------- | ------ | --------- | -------------------------- |
+| 7  | 4       | 4000   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 8  | 4       | 1700   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 9  | 5       | 2600   | PLACED    | 2026-01-26 14:26:15.015981 |
+| 1  | 1       | 1200   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 2  | 1       | 2500   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 3  | 1       | 1800   | DELIVERED | 2026-01-26 14:26:15.015981 |
+| 6  | 3       | 2400   | PLACED    | 2026-01-26 14:26:15.015981 |
+
+Step-3 Attempt deleting a user with existing orders (user_id = 1)
+DELETE FROM users
+WHERE id = 1;
+
+
+
+
+Orders should not be stored inside the users table because::  One user can have multiple orders, 
+storing orders in users would break normalization rules, it causes data duplication and makes queries inefficient
+Separate tables maintain data integrity using foreign keys
